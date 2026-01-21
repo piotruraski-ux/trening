@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trening App</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Trening App</h1>
+</header>
+
+<div class="container">
+
+  <!-- LEWA KOLUMNA: ĆWICZENIA + SZABLONY -->
+  <aside class="left-panel">
+    <h2>Ćwiczenia</h2>
+    <div id="exerciseList"></div>
+
+    <h2>Dodaj nowe ćwiczenie</h2>
+    <input type="text" id="newName" placeholder="Nazwa ćwiczenia">
+    <input type="text" id="newLink" placeholder="Link YouTube">
+    <select id="newCat">
+      <option>Na ręce</option>
+      <option>Na nogi</option>
+      <option>Cardio</option>
+      <option>Mobilnościowe</option>
+    </select>
+    <button onclick="addExercise()">Dodaj ćwiczenie</button>
+
+    <h2>Szablony</h2>
+    <input type="text" id="templateName" placeholder="Nazwa szablonu">
+    <button onclick="saveTemplate()">Zapisz szablon</button>
+    <div id="templateList"></div>
+  </aside>
+
+  <!-- ŚRODEK: PLAN + TIMER -->
+  <main class="center-panel">
+    <h2>Plan treningowy</h2>
+    <div id="plan"></div>
+
+    <div class="timer-panel">
+      <h3>Timer: <span id="time">00:00</span></h3>
+      <button onclick="startTimer()">Start</button>
+      <button onclick="pauseTimer()">Pauza</button>
+      <button onclick="skipTimer()">Pomiń</button>
+      <button onclick="resetTimer()">Reset</button>
+      <audio id="beep" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+    </div>
+  </main>
+
+  <!-- PRAWA KOLUMNA: KALENDARZ -->
+  <aside class="right-panel">
+    <h2>Kalendarz</h2>
+    <div class="calendar-header">
+      <button onclick="prevMonth()">«</button>
+      <span id="monthLabel"></span>
+      <button onclick="nextMonth()">»</button>
+    </div>
+    <div id="calendar" class="calendar-grid"></div>
+  </aside>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

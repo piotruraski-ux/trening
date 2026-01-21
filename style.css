@@ -1,0 +1,29 @@
+/* TRYB CIEMNY Z POMARAŃCZOWYMI AKCENTAMI */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+body { background: #1e1e1e; color: #f5f5f5; }
+header { background: #ff9900; color: #1e1e1e; padding: 10px; text-align: center; font-weight: bold; font-size: 1.5em; }
+.container { display: flex; flex-wrap: wrap; padding: 10px; gap: 10px; }
+
+.left-panel, .right-panel, .center-panel { background: #2c2c2c; padding: 10px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+.left-panel { flex: 1 1 220px; max-width: 250px; }
+.center-panel { flex: 2 1 400px; }
+.right-panel { flex: 1 1 300px; max-width: 350px; }
+
+.exercise { padding: 4px; cursor: pointer; transition: background 0.2s; color: #f5f5f5; }
+.exercise:hover { background: #ff9900; color: #1e1e1e; }
+
+.plan-item { border: 2px solid #ff9900; border-radius: 6px; margin-bottom: 8px; padding: 5px; background: #3a3a3a; color: #f5f5f5; }
+.plan-item a { color: #ffcc80; }
+
+.timer-panel { margin-top: 10px; text-align: center; }
+
+button { background: #ff9900; border: none; border-radius: 4px; padding: 5px 8px; cursor: pointer; color: #1e1e1e; margin: 2px; }
+button:hover { background: #ffcc80; }
+
+input, select { padding: 4px; margin: 2px; border-radius: 4px; border: none; }
+
+.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.day { background: #2c2c2c; min-height: 80px; border: 1px solid #555; padding: 2px; position: relative; cursor: pointer; }
+.day span { font-weight: bold; color: #ff9900; }
+.event { background: #ff9900; border-radius: 4px; padding: 2px; margin-top: 2px; font-size: 0.8em; cursor: pointer; color: #1e1e1e; }

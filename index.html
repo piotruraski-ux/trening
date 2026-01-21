@@ -1,68 +1,86 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trening App</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Trening Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<header>
-  <h1>Trening App</h1>
-</header>
+<div id="app">
 
-<div class="container">
-
-  <!-- LEWA KOLUMNA: ĆWICZENIA + SZABLONY -->
-  <aside class="left-panel">
+  <!-- LEFT -->
+  <aside id="left">
     <h2>Ćwiczenia</h2>
-    <div id="exerciseList"></div>
 
-    <h2>Dodaj nowe ćwiczenie</h2>
-    <input type="text" id="newName" placeholder="Nazwa ćwiczenia">
-    <input type="text" id="newLink" placeholder="Link YouTube">
+    <div class="category">
+      <button class="cat-btn">Na ręce</button>
+      <div class="cat-body" id="cat-arms"></div>
+    </div>
+
+    <div class="category">
+      <button class="cat-btn">Na nogi</button>
+      <div class="cat-body" id="cat-legs"></div>
+    </div>
+
+    <div class="category">
+      <button class="cat-btn">Cardio</button>
+      <div class="cat-body" id="cat-cardio"></div>
+    </div>
+
+    <div class="category">
+      <button class="cat-btn">Mobilność</button>
+      <div class="cat-body" id="cat-mobility"></div>
+    </div>
+
+    <hr>
+
+    <h3>Dodaj ćwiczenie</h3>
+    <input id="newName" placeholder="Nazwa">
+    <input id="newYT" placeholder="Link YouTube">
     <select id="newCat">
-      <option>Na ręce</option>
-      <option>Na nogi</option>
-      <option>Cardio</option>
-      <option>Mobilnościowe</option>
+      <option value="arms">Ręce</option>
+      <option value="legs">Nogi</option>
+      <option value="cardio">Cardio</option>
+      <option value="mobility">Mobilność</option>
     </select>
-    <button onclick="addExercise()">Dodaj ćwiczenie</button>
+    <button onclick="addExercise()">Dodaj</button>
 
-    <h2>Szablony</h2>
-    <input type="text" id="templateName" placeholder="Nazwa szablonu">
+    <hr>
+
+    <h3>Szablony</h3>
+    <input id="templateName" placeholder="Nazwa szablonu">
     <button onclick="saveTemplate()">Zapisz szablon</button>
-    <div id="templateList"></div>
+    <div id="templates"></div>
   </aside>
 
-  <!-- ŚRODEK: PLAN + TIMER -->
-  <main class="center-panel">
-    <h2>Plan treningowy</h2>
+  <!-- CENTER -->
+  <main id="center">
+    <h1>Plan treningowy</h1>
     <div id="plan"></div>
 
-    <div class="timer-panel">
-      <h3>Timer: <span id="time">00:00</span></h3>
-      <button onclick="startTimer()">Start</button>
-      <button onclick="pauseTimer()">Pauza</button>
-      <button onclick="skipTimer()">Pomiń</button>
-      <button onclick="resetTimer()">Reset</button>
-      <audio id="beep" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+    <div id="timer">
+      <h2 id="timerLabel">Timer</h2>
+      <div id="time">00:00.0</div>
+      <div class="timer-btns">
+        <button onclick="startTimer()">Start</button>
+        <button onclick="pauseTimer()">Pauza</button>
+        <button onclick="skipStep()">Pomiń</button>
+        <button onclick="resetTimer()">Reset</button>
+      </div>
     </div>
   </main>
 
-  <!-- PRAWA KOLUMNA: KALENDARZ -->
-  <aside class="right-panel">
+  <!-- RIGHT -->
+  <aside id="right">
     <h2>Kalendarz</h2>
-    <div class="calendar-header">
-      <button onclick="prevMonth()">«</button>
-      <span id="monthLabel"></span>
-      <button onclick="nextMonth()">»</button>
-    </div>
-    <div id="calendar" class="calendar-grid"></div>
+    <div id="calendar"></div>
   </aside>
 
 </div>
+
+<audio id="beep" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
 
 <script src="script.js"></script>
 </body>

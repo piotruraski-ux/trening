@@ -61,22 +61,23 @@ function buildTimeline(plan) {
   timeline = [];
 
   plan.forEach(ex => {
-    for (let s = 1; s <= ex.sets; s++) {
-      timeline.push({
-        type: "work",
-        duration: Number(ex.time) * 60,
+  const sets = Number(ex.sets) || 1;
+    for (let s = 1; s <= sets; s++) {
+        timeline.push({
+          type: "work",
+          duration: Number(ex.time) * 60,
+          label: `${ex.name} – seria ${s}`
+        });
+  
+        timeline.push({
+          type: "rest",
+          duration: Number(ex.rest) * 60,
+          label: `Odpoczynek po ${ex.name}`
+        });
+      }
+    });
+  }
 
-        label: `${ex.name} – seria ${s}`
-      });
-
-      timeline.push({
-        type: "rest",
-        duration: Number(ex.rest) * 60,
-        label: `Odpoczynek po ${ex.name}`
-      });
-    }
-  });
-}
 
 /* =========================
    START TRENINGU
@@ -100,24 +101,29 @@ function startTraining() {
 ========================= */
 
 function startStage() {
-  if (!timeline[currentStageIndex] || timeline[currentStageIndex].duration <= 0) {
-  currentStageIndex++;
-  startStage();
-  return;
-}
-
   if (currentStageIndex >= timeline.length) {
     labelEl.innerText = "Trening zakończony 💪";
     timeEl.innerText = "00:00.0";
+    clearInterval(timerInterval);
     return;
   }
 
   const stage = timeline[currentStageIndex];
+
+  if (!stage || stage.duration <= 0) {
+    currentStageIndex++;
+    startStage();
+    return;
+  }
+
   timeLeft = stage.duration;
   labelEl.innerText = stage.label;
 
+  renderTime(timeLeft);
   tick();
 }
+
+
 
 /* =========================
    TICK (0.1s)

@@ -266,28 +266,52 @@ function deleteExercise(index){
 /***********************
  * PLAN
  ***********************/
-function addToPlan(e){
-  plan.push({...e, series:3, reps:10, time:1, rest:30});
-  renderPlan();
-}
+function renderPlan() {
+  planDiv.innerHTML = "";
 
-function renderPlan(){
-  planDiv.innerHTML="";
-  plan.forEach((p,i)=>{
-    const d=document.createElement("div");
-    d.className="plan-item";
-    const thumb = p.yt?`<iframe width="120" height="68" src="https://www.youtube.com/embed/${extractYTId(p.yt)}" frameborder="0" allowfullscreen></iframe>`:"";
-    d.innerHTML=`${thumb}<b>${p.name}</b>
-      <div>
-      Serie <input type="number" value="${p.series}" onchange="plan[${i}].series=this.value">
-      Powt <input type="number" value="${p.reps}" onchange="plan[${i}].reps=this.value">
-      Czas (min) <input type="number" step="0.1" value="${p.time}" onchange="plan[${i}].time=this.value">
-      Odp (s) <input type="number" value="${p.rest}" onchange="plan[${i}].rest=this.value">
-      <button onclick="plan.splice(${i},1);renderPlan()">❌</button>
-      </div>`;
+  plan.forEach((p, i) => {
+    const d = document.createElement("div");
+    d.className = "plan-item";
+
+    const thumb = p.yt
+      ? `<iframe width="120" height="68"
+          src="https://www.youtube.com/embed/${extractYTId(p.yt)}"
+          frameborder="0" allowfullscreen></iframe>`
+      : "";
+
+    d.innerHTML = `
+      ${thumb}
+      <b>${p.name}</b>
+
+      <div class="plan-inputs">
+        Serie
+        <input type="number" min="1"
+          value="${p.sets ?? p.series ?? 1}"
+          onchange="plan[${i}].sets = Number(this.value)">
+
+        Powt
+        <input type="number" min="1"
+          value="${p.reps ?? 0}"
+          onchange="plan[${i}].reps = Number(this.value)">
+
+        Czas (min)
+        <input type="number" step="0.1" min="0"
+          value="${p.time ?? 0}"
+          onchange="plan[${i}].time = Number(this.value)">
+
+        Odp (sek)
+        <input type="number" min="0"
+          value="${p.rest ?? 0}"
+          onchange="plan[${i}].rest = Number(this.value) / 60">
+
+        <button onclick="plan.splice(${i},1);renderPlan()">❌</button>
+      </div>
+    `;
+
     planDiv.appendChild(d);
   });
 }
+
 
 function extractYTId(url){
   const match=url.match(/(?:v=|\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);

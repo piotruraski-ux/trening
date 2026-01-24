@@ -1,29 +1,119 @@
-/* TRYB CIEMNY Z POMARAŃCZOWYMI AKCENTAMI */
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-body { background: #1e1e1e; color: #f5f5f5; }
-header { background: #ff9900; color: #1e1e1e; padding: 10px; text-align: center; font-weight: bold; font-size: 1.5em; }
-.container { display: flex; flex-wrap: wrap; padding: 10px; gap: 10px; }
+* { box-sizing: border-box; }
 
-.left-panel, .right-panel, .center-panel { background: #2c2c2c; padding: 10px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); }
-.left-panel { flex: 1 1 220px; max-width: 250px; }
-.center-panel { flex: 2 1 400px; }
-.right-panel { flex: 1 1 300px; max-width: 350px; }
+body {
+  margin: 0;
+  background: #0f0f0f;
+  color: #eee;
+  font-family: Arial, sans-serif;
+}
 
-.exercise { padding: 4px; cursor: pointer; transition: background 0.2s; color: #f5f5f5; }
-.exercise:hover { background: #ff9900; color: #1e1e1e; }
+#app {
+  display: grid;
+  grid-template-columns: 260px 1fr 300px;
+  min-height: 100vh;
+}
 
-.plan-item { border: 2px solid #ff9900; border-radius: 6px; margin-bottom: 8px; padding: 5px; background: #3a3a3a; color: #f5f5f5; }
-.plan-item a { color: #ffcc80; }
+aside, main {
+  padding: 15px;
+}
 
-.timer-panel { margin-top: 10px; text-align: center; }
+#left, #right {
+  background: #141414;
+}
 
-button { background: #ff9900; border: none; border-radius: 4px; padding: 5px 8px; cursor: pointer; color: #1e1e1e; margin: 2px; }
-button:hover { background: #ffcc80; }
+h1, h2, h3 {
+  color: orange;
+}
 
-input, select { padding: 4px; margin: 2px; border-radius: 4px; border: none; }
+.category {
+  margin-bottom: 10px;
+}
 
-.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-.day { background: #2c2c2c; min-height: 80px; border: 1px solid #555; padding: 2px; position: relative; cursor: pointer; }
-.day span { font-weight: bold; color: #ff9900; }
-.event { background: #ff9900; border-radius: 4px; padding: 2px; margin-top: 2px; font-size: 0.8em; cursor: pointer; color: #1e1e1e; }
+.cat-btn {
+  width: 100%;
+  background: #222;
+  color: orange;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.cat-body {
+  display: none;
+  padding: 5px;
+}
+
+.exercise {
+  background: #222;
+  margin: 5px 0;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.exercise img {
+  width: 50px;
+}
+
+.exercise button {
+  background: orange;
+  border: none;
+  cursor: pointer;
+}
+
+#plan .card {
+  border: 2px solid orange;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+#timer {
+  margin-top: 20px;
+  border: 2px solid orange;
+  padding: 10px;
+  text-align: center;
+}
+
+#time {
+  font-size: 2em;
+  margin: 10px 0;
+}
+
+.timer-btns button {
+  margin: 5px;
+}
+
+#calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.day {
+  background: #222;
+  padding: 5px;
+  cursor: pointer;
+  min-height: 60px;
+}
+
+.event {
+  background: orange;
+  color: black;
+  margin-top: 3px;
+  padding: 2px;
+  font-size: 12px;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  #app {
+    grid-template-columns: 1fr;
+  }
+  #left, #right {
+    order: 2;
+  }
+  #center {
+    order: 1;
+  }
+}

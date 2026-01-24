@@ -343,22 +343,60 @@ function deleteTrainingFromDate(dateStr) {
 
 function renderCalendar() {
   const cal = document.getElementById("calendar");
+  if (!cal) return;
+
   cal.innerHTML = "";
 
-  Object.keys(calendarData).forEach(date => {
-    const d = document.createElement("div");
-    d.className = "calendar-day";
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  const lastDay = new Date(currentYear, currentMonth + 1, 0);
 
-    d.innerHTML = `
-      <b>${date}</b><br>
-      ${calendarData[date].name}<br>
-      <button onclick="loadTrainingFromDate('${date}')">▶</button>
-      <button onclick="deleteTrainingFromDate('${date}')">❌</button>
-    `;
+  const startDay = (firstDay.getDay() + 6) % 7; // pon=0
+  const daysInMonth = lastDay.getDate();
 
-    cal.appendChild(d);
+  const header = document.createElement("div");
+  header.className = "calendar-header";
+  header.innerHTML = `
+    <button onclick="prevMonth()">◀</button>
+    <span>${currentYear} – ${currentMonth + 1}</span>
+    <button onclick="nextMonth()">▶</button>
+  `;
+  cal.appendChild(header);
+
+  const grid = document.createElement("div");
+  grid.className = "calendar-grid";
+
+  ["Pn","Wt","Śr","Cz","Pt","Sb","Nd"].forEach(d => {
+    const h = document.createElement("div");
+    h.className = "calendar-day header";
+    h.textContent = d;
+    grid.appendChild(h);
   });
+
+  for (let i = 0; i < startDay; i++) {
+    grid.appendChild(document.createElement("div"));
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr =
+      `${currentYear}-${String(currentMonth + 1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+
+    const cell = document.createElement("div");
+    cell.className = "calendar-day";
+    cell.innerHTML = `<b>${day}</b>`;
+
+    if (calendarData[dateStr]) {
+      cell.innerHTML += `<div class="cal-training">${calendarData[dateStr].name}</div>`;
+      cell.onclick = () => loadTrainingFromDate(dateStr);
+    } else {
+      cell.onclick = () => saveTrainingToDate(dateStr);
+    }
+
+    grid.appendChild(cell);
+  }
+
+  cal.appendChild(grid);
 }
+
 
 
 function addToPlan(exercise) {

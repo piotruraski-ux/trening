@@ -1,7 +1,7 @@
 /* TRYB CIEMNY Z POMARAŃCZOWYMI AKCENTAMI */
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
 body { background: #1e1e1e; color: #f5f5f5; }
-header { background: #ff9900; color: #1e1e1e; padding: 10px; text-align: center; font-weight: bold; font-size: 1.5em; }
+header { background: #E46B00; color: #1e1e1e; padding: 10px; text-align: center; font-weight: bold; font-size: 1.5em; }
 .container { display: flex; flex-wrap: wrap; padding: 10px; gap: 10px; }
 
 .left-panel, .right-panel, .center-panel { background: #2c2c2c; padding: 10px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); }
@@ -10,15 +10,15 @@ header { background: #ff9900; color: #1e1e1e; padding: 10px; text-align: center;
 .right-panel { flex: 1 1 300px; max-width: 350px; }
 
 .exercise { padding: 4px; cursor: pointer; transition: background 0.2s; color: #f5f5f5; }
-.exercise:hover { background: #ff9900; color: #1e1e1e; }
+.exercise:hover { background: #E46B00; color: #1e1e1e; }
 
-.plan-item { border: 2px solid #ff9900; border-radius: 6px; margin-bottom: 8px; padding: 5px; background: #3a3a3a; color: #f5f5f5; }
-.plan-item a { color: #ffcc80; }
+.plan-item { border: 2px solid #E46B00; border-radius: 6px; margin-bottom: 8px; padding: 5px; background: #3a3a3a; color: #f5f5f5; }
+.plan-item a { color: #E46B00; }
 
 .timer-panel { margin-top: 10px; text-align: center; }
 
-button { background: #ff9900; border: none; border-radius: 4px; padding: 5px 8px; cursor: pointer; color: #1e1e1e; margin: 2px; }
-button:hover { background: #ffcc80; }
+button { background: #E46B00; border: none; border-radius: 4px; padding: 5px 8px; cursor: pointer; color: #1e1e1e; margin: 2px; }
+button:hover { background: #E46B00; }
 
 input, select { padding: 4px; margin: 2px; border-radius: 4px; border: none; }
 
@@ -31,7 +31,7 @@ input, select { padding: 4px; margin: 2px; border-radius: 4px; border: none; }
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-  color: orange;
+  color: #E46B00;
 }
 
 .calendar-grid {
@@ -58,12 +58,12 @@ input, select { padding: 4px; margin: 2px; border-radius: 4px; border: none; }
 }
 
 .calendar-day:hover {
-  outline: 1px solid orange;
+  outline: 1px solid #E46B00;
 }
 
 .cal-training {
   margin-top: 4px;
-  background: orange;
+  background: #E46B00;
   color: #000;
   border-radius: 4px;
   padding: 2px 4px;
@@ -71,7 +71,7 @@ input, select { padding: 4px; margin: 2px; border-radius: 4px; border: none; }
 }
 .cal-training {
   margin-top: 4px;
-  background: orange;
+  background: #E46B00;
   color: #000;
   border-radius: 4px;
   padding: 3px 6px;

@@ -69,4 +69,24 @@ input, select { padding: 4px; margin: 2px; border-radius: 4px; border: none; }
   padding: 2px 4px;
   font-size: 11px;
 }
+.cal-training {
+  margin-top: 4px;
+  background: orange;
+  color: #000;
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 11px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cal-delete {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.cal-delete:hover {
+  color: red;
+}
 

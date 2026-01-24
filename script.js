@@ -385,9 +385,29 @@ function renderCalendar() {
     cell.innerHTML = `<b>${day}</b>`;
 
     if (calendarData[dateStr]) {
-      cell.innerHTML += `<div class="cal-training">${calendarData[dateStr].name}</div>`;
-      cell.onclick = () => loadTrainingFromDate(dateStr);
-    } else {
+      if (calendarData[dateStr]) {
+  const entry = calendarData[dateStr];
+
+  const wrap = document.createElement("div");
+  wrap.className = "cal-training";
+
+  const name = document.createElement("span");
+  name.textContent = entry.name;
+  name.onclick = () => loadTrainingFromDate(dateStr);
+
+  const del = document.createElement("span");
+  del.textContent = " ❌";
+  del.className = "cal-delete";
+  del.onclick = (e) => {
+    e.stopPropagation();
+    deleteTrainingFromDate(dateStr);
+  };
+
+  wrap.appendChild(name);
+  wrap.appendChild(del);
+  cell.appendChild(wrap);
+}
+
       cell.onclick = () => saveTrainingToDate(dateStr);
     }
 

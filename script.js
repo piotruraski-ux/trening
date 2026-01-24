@@ -418,6 +418,10 @@ function addToPlan(exercise) {
 function saveExercises(){localStorage.setItem(LS.EXERCISES,JSON.stringify(exercises))}
 function saveTemplates(){localStorage.setItem(LS.TEMPLATES,JSON.stringify(templates))}
 function saveCalendar(){localStorage.setItem(LS.CALENDAR,JSON.stringify(calendarData))}
+function saveExercises() {
+  localStorage.setItem("exercises", JSON.stringify(exercises));
+}
+
 
 /***********************
  * RENDER
@@ -440,7 +444,7 @@ function renderExercises(){
       const div=document.createElement("div");
       div.className="exercise";
       div.innerHTML=`<strong>${e.name}</strong> ${e.yt?`<a href="${e.yt}" target="_blank">🎥</a>`:""} 
-        <button onclick="deleteExercise(${i})">❌</button>`;
+        <button onclick="editExercise(${i})">✏️</button>`;
       div.onclick=(ev)=>{if(ev.target.tagName!=="BUTTON") addToPlan(e);};
       details.appendChild(div);
     });
@@ -481,6 +485,29 @@ function nextMonth() {
     currentYear++;
   }
   renderCalendar();
+}
+/***********************
+   EDIT EXERCISE
+ ***********************/
+function editExercise(index) {
+  const ex = exercises[index];
+
+  const newName = prompt("Nowa nazwa ćwiczenia:", ex.name);
+  if (!newName) return;
+
+  const newYT = prompt("Link do YouTube (opcjonalnie):", ex.yt || "");
+
+  ex.name = newName;
+  ex.yt = newYT;
+
+  if (confirm("Czy chcesz usunąć to ćwiczenie?")) {
+    if (confirm("Na pewno usunąć ćwiczenie?")) {
+      exercises.splice(index, 1);
+    }
+  }
+
+  saveExercises();
+  renderExercises();
 }
 
 /***********************

@@ -8,11 +8,12 @@ const LS = { EXERCISES:"tp_exercises", TEMPLATES:"tp_templates", CALENDAR:"tp_ca
  ***********************/
 let exercises = JSON.parse(localStorage.getItem(LS.EXERCISES)) || [];
 let templates = JSON.parse(localStorage.getItem(LS.TEMPLATES)) || [];
-let calendarData = JSON.parse(localStorage.getItem(LS.CALENDAR)) || [];
 let plan = [];
 let timerSeconds = 0;
 let timerStage = 'stopped'; // exercise / rest / stopped
 let currentExerciseIndex = 0;
+let calendarData = JSON.parse(localStorage.getItem("calendarData")) || {};
+
 
 /***********************
  * DOM
@@ -213,72 +214,7 @@ if(exercises.length===0){
   ];
   localStorage.setItem(LS.EXERCISES, JSON.stringify(exercises));
 }
-function renderCalendar() {
-  // tymczasowo pusto
-}
-function addToPlan(exercise) {
-  plan.push({
-    name: exercise.name,
-    sets: 1,
-    time: 0.5,
-    rest: 0.5,
-    reps: 0,
-    yt: exercise.yt || ""
-  });
 
-  renderPlan();
-}
-
-/***********************
- * SAVE FUNCTIONS
- ***********************/
-function saveExercises(){localStorage.setItem(LS.EXERCISES,JSON.stringify(exercises))}
-function saveTemplates(){localStorage.setItem(LS.TEMPLATES,JSON.stringify(templates))}
-function saveCalendar(){localStorage.setItem(LS.CALENDAR,JSON.stringify(calendarData))}
-
-/***********************
- * RENDER
- ***********************/
-function renderAll(){renderExercises(); renderPlan(); renderTemplates(); renderCalendar()}
-
-/***********************
- * EXERCISES
- ***********************/
-function renderExercises(){
-  exerciseList.innerHTML="";
-  const categories=["Na ręce","Na nogi","Cardio","Mobilnościowe"];
-  categories.forEach(cat=>{
-    const details=document.createElement("details");
-    details.open=true;
-    const summary=document.createElement("summary");
-    summary.textContent=cat;
-    details.appendChild(summary);
-    exercises.filter(e=>e.cat===cat).forEach((e,i)=>{
-      const div=document.createElement("div");
-      div.className="exercise";
-      div.innerHTML=`<strong>${e.name}</strong> ${e.yt?`<a href="${e.yt}" target="_blank">🎥</a>`:""} 
-        <button onclick="deleteExercise(${i})">❌</button>`;
-      div.onclick=(ev)=>{if(ev.target.tagName!=="BUTTON") addToPlan(e);};
-      details.appendChild(div);
-    });
-    exerciseList.appendChild(details);
-  });
-}
-
-function addExercise(){
-  const name=newName.value.trim();
-  if(!name)return;
-  exercises.push({name,yt:newLink.value.trim(),cat:newCat.value});
-  newName.value=""; newLink.value="";
-  saveExercises();
-  renderExercises();
-}
-
-function deleteExercise(index){
-  exercises.splice(index,1);
-  saveExercises();
-  renderExercises();
-}
 
 /***********************
  * PLAN
@@ -358,7 +294,136 @@ function renderTemplates(){
   });
 }
 
+/***********************
+ KALENDARZ
+ ***********************/
+function saveTrainingToDate(dateStr) {
+  if (plan.length === 0) {
+    alert("Brak ćwiczeń w planie");
+    return;
+  }
 
+  const name = prompt("Nazwa treningu:");
+  if (!name) return;
+
+  calendarData[dateStr] = {
+    name,
+    plan: JSON.parse(JSON.stringify(plan))
+  };
+/***********************
+ wczytywanie i zapisywanie kalendarza
+
+***********************/
+  localStorage.setItem("calendarData", JSON.stringify(calendarData));
+  renderCalendar();
+}
+function loadTrainingFromDate(dateStr) {
+  const entry = calendarData[dateStr];
+  if (!entry) return;
+
+  if (!confirm(`Wczytać trening: "${entry.name}"?`)) return;
+
+  plan = JSON.parse(JSON.stringify(entry.plan));
+  renderPlan();
+}
+/***********************
+ usuwanie i zapisywanie treningu z kalendarza
+
+***********************/
+function deleteTrainingFromDate(dateStr) {
+  const entry = calendarData[dateStr];
+  if (!entry) return;
+
+  if (!confirm(`Usunąć trening "${entry.name}"?`)) return;
+
+  delete calendarData[dateStr];
+  localStorage.setItem("calendarData", JSON.stringify(calendarData));
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const cal = document.getElementById("calendar");
+  cal.innerHTML = "";
+
+  Object.keys(calendarData).forEach(date => {
+    const d = document.createElement("div");
+    d.className = "calendar-day";
+
+    d.innerHTML = `
+      <b>${date}</b><br>
+      ${calendarData[date].name}<br>
+      <button onclick="loadTrainingFromDate('${date}')">▶</button>
+      <button onclick="deleteTrainingFromDate('${date}')">❌</button>
+    `;
+
+    cal.appendChild(d);
+  });
+}
+
+
+function addToPlan(exercise) {
+  plan.push({
+    name: exercise.name,
+    sets: 1,
+    time: 0.5,
+    rest: 0.5,
+    reps: 0,
+    yt: exercise.yt || ""
+  });
+
+  renderPlan();
+}
+
+/***********************
+ * SAVE FUNCTIONS
+ ***********************/
+function saveExercises(){localStorage.setItem(LS.EXERCISES,JSON.stringify(exercises))}
+function saveTemplates(){localStorage.setItem(LS.TEMPLATES,JSON.stringify(templates))}
+function saveCalendar(){localStorage.setItem(LS.CALENDAR,JSON.stringify(calendarData))}
+
+/***********************
+ * RENDER
+ ***********************/
+function renderAll(){renderExercises(); renderPlan(); renderTemplates(); renderCalendar()}
+
+/***********************
+ * EXERCISES
+ ***********************/
+function renderExercises(){
+  exerciseList.innerHTML="";
+  const categories=["Na ręce","Na nogi","Cardio","Mobilnościowe"];
+  categories.forEach(cat=>{
+    const details=document.createElement("details");
+    details.open=true;
+    const summary=document.createElement("summary");
+    summary.textContent=cat;
+    details.appendChild(summary);
+    exercises.filter(e=>e.cat===cat).forEach((e,i)=>{
+      const div=document.createElement("div");
+      div.className="exercise";
+      div.innerHTML=`<strong>${e.name}</strong> ${e.yt?`<a href="${e.yt}" target="_blank">🎥</a>`:""} 
+        <button onclick="deleteExercise(${i})">❌</button>`;
+      div.onclick=(ev)=>{if(ev.target.tagName!=="BUTTON") addToPlan(e);};
+      details.appendChild(div);
+    });
+    exerciseList.appendChild(details);
+  });
+}
+
+function addExercise(){
+  const name=newName.value.trim();
+  if(!name)return;
+  exercises.push({name,yt:newLink.value.trim(),cat:newCat.value});
+  newName.value=""; newLink.value="";
+  saveExercises();
+  renderExercises();
+}
+
+function deleteExercise(index){
+  exercises.splice(index,1);
+  saveExercises();
+  renderExercises();
+}
 /***********************
  * INITIAL RENDER
  ***********************/

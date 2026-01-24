@@ -10,13 +10,9 @@ let exercises = JSON.parse(localStorage.getItem(LS.EXERCISES)) || [];
 let templates = JSON.parse(localStorage.getItem(LS.TEMPLATES)) || [];
 let calendarData = JSON.parse(localStorage.getItem(LS.CALENDAR)) || [];
 let plan = [];
-let timerInterval = null;
 let timerSeconds = 0;
 let timerStage = 'stopped'; // exercise / rest / stopped
 let currentExerciseIndex = 0;
-let currentStageIndex = 0;
-let timeLeft = 0;
-let isPaused = false;
 
 /***********************
  * DOM
@@ -26,7 +22,6 @@ const planDiv = document.getElementById("plan");
 const templateList = document.getElementById("templateList");
 const calendarDiv = document.getElementById("calendar");
 const monthLabel = document.getElementById("monthLabel");
-const beep = document.getElementById("beep");
 const newName = document.getElementById("newName");
 const newLink = document.getElementById("newLink");
 const newCat = document.getElementById("newCat");
@@ -35,49 +30,50 @@ const templateName = document.getElementById("templateName");
 let currentDate = new Date();
 
 /* =========================
-   TIMER – LOGIKA ETAPOWA
+   TIMER
 ========================= */
 
 let timeline = [];
+let currentStageIndex = 0;
+let timeLeft = 0;
+let timerInterval = null;
+let isPaused = false;
 
 const timeEl = document.getElementById("time");
 const labelEl = document.getElementById("timerLabel");
+const beep = document.getElementById("beep");
 
 /* =========================
    BUDOWANIE TIMELINE
 ========================= */
-/*
-  plan = [
-    {
-      name: "Przysiady",
-      sets: 3,
-      time: 1,      // minuty
-      rest: 0.5     // minuty
-    }
-  ]
-*/
 
 function buildTimeline(plan) {
   timeline = [];
 
   plan.forEach(ex => {
-  const sets = Number(ex.sets) || 1;
+    const sets = Number(ex.sets) || 1;
+    const work = Number(ex.time) || 0;
+    const rest = Number(ex.rest) || 0;
+
     for (let s = 1; s <= sets; s++) {
+      if (work > 0) {
         timeline.push({
           type: "work",
-          duration: Number(ex.time) * 60,
+          duration: work * 60,
           label: `${ex.name} – seria ${s}`
         });
-  
+      }
+
+      if (rest > 0) {
         timeline.push({
           type: "rest",
-          duration: Number(ex.rest) * 60,
+          duration: rest * 60,
           label: `Odpoczynek po ${ex.name}`
         });
       }
-    });
-  }
-
+    }
+  });
+}
 
 /* =========================
    START TRENINGU
@@ -90,9 +86,11 @@ function startTraining() {
   }
 
   clearInterval(timerInterval);
-  buildTimeline(plan);
+  isPaused = false;
 
+  buildTimeline(plan);
   currentStageIndex = 0;
+
   startStage();
 }
 
@@ -101,10 +99,11 @@ function startTraining() {
 ========================= */
 
 function startStage() {
+  clearInterval(timerInterval);
+
   if (currentStageIndex >= timeline.length) {
     labelEl.innerText = "Trening zakończony 💪";
     timeEl.innerText = "00:00.0";
-    clearInterval(timerInterval);
     return;
   }
 
@@ -118,45 +117,40 @@ function startStage() {
 
   timeLeft = stage.duration;
   labelEl.innerText = stage.label;
-
   renderTime(timeLeft);
-  tick();
+
+  timerInterval = setInterval(tick, 100);
 }
 
-
-
 /* =========================
-   TICK (0.1s)
+   TICK
 ========================= */
 
 function tick() {
-  clearInterval(timerInterval);
+  if (isPaused) return;
 
-  timerInterval = setInterval(() => {
-    if (isPaused) return;
+  timeLeft -= 0.1;
 
-    timeLeft -= 0.1;
+  if (timeLeft <= 0) {
+    clearInterval(timerInterval);
+    beep.currentTime = 0;
+    beep.play();
+    currentStageIndex++;
+    startStage();
+    return;
+  }
 
-    if (timeLeft <= 0) {
-      beep.play();
-      clearInterval(timerInterval);
-      currentStageIndex++;
-      startStage();
-      return;
-    }
-
-    renderTime(timeLeft);
-  }, 100);
+  renderTime(timeLeft);
 }
 
 /* =========================
    FORMAT CZASU
 ========================= */
 
-function renderTime(seconds) {
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  const d = Math.floor((seconds % 1) * 10);
+function renderTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  const d = Math.floor((sec % 1) * 10);
 
   timeEl.innerText =
     `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}.${d}`;
@@ -172,6 +166,7 @@ function pauseTimer() {
 
 function skipStage() {
   clearInterval(timerInterval);
+  beep.currentTime = 0;
   beep.play();
   currentStageIndex++;
   startStage();
@@ -187,6 +182,7 @@ function resetTimer() {
   labelEl.innerText = "Timer";
   timeEl.innerText = "00:00.0";
 }
+
 
 /***********************
  * INIT DEFAULT EXERCISES
@@ -320,98 +316,6 @@ function renderTemplates(){
   });
 }
 
-/***********************
- * TIMER
- ***********************/
-function startTimer(){
-  if(plan.length===0) return;
-  currentExerciseIndex=0;
-  timerStage='exercise';
-  timerSeconds=plan[0].time*60;
-  runTimer();
-}
-
-function runTimer(){
-  clearInterval(timerInterval);
-  timerInterval=setInterval(()=>{
-    if(timerSeconds<=0){
-      beep.play();
-      if(timerStage==='exercise'){
-        timerStage='rest';
-        timerSeconds=plan[currentExerciseIndex].rest;
-      }else{
-        currentExerciseIndex++;
-        if(currentExerciseIndex>=plan.length){clearInterval(timerInterval);timerStage='stopped';updateTimer();return;}
-        timerStage='exercise';
-        timerSeconds=plan[currentExerciseIndex].time*60;
-      }
-    }
-    updateTimer();
-    timerSeconds-=0.1;
-  },100);
-}
-
-function updateTimer(){
-  const m=Math.floor(timerSeconds/60);
-  const s=Math.floor(timerSeconds%60);
-  document.getElementById("time").textContent=`${m}:${String(s).padStart(2,"0")}`;
-}
-
-function pauseTimer(){clearInterval(timerInterval);}
-function resetTimer(){pauseTimer(); document.getElementById("time").textContent="00:00"; timerStage='stopped';}
-function skipTimer(){beep.play();currentExerciseIndex++; if(currentExerciseIndex>=plan.length){resetTimer(); return;} timerStage='exercise'; timerSeconds=plan[currentExerciseIndex].time*60; updateTimer();}
-
-/***********************
- * CALENDAR
- ***********************/
-function renderCalendar(){
-  calendarDiv.innerHTML="";
-  const year=currentDate.getFullYear();
-  const month=currentDate.getMonth();
-  monthLabel.textContent=currentDate.toLocaleDateString("pl-PL",{month:"long",year:"numeric"});
-  const firstDay=new Date(year,month,1).getDay()||7;
-  const daysInMonth=new Date(year,month+1,0).getDate();
-
-  for(let i=1;i<firstDay;i++){calendarDiv.appendChild(document.createElement("div"));}
-
-  for(let d=1;d<=daysInMonth;d++){
-    const cell=document.createElement("div");
-    cell.className="day";
-    cell.innerHTML=`<span>${d}</span>`;
-    const key=`${year}-${month}-${d}`;
-    if(!calendarData[key]) calendarData[key]=[];
-    calendarData[key].forEach((ev,idx)=>{
-      const e=document.createElement("div");
-      e.className="event";
-      e.textContent=ev.name;
-      e.onclick=(evclick)=>{evclick.stopPropagation(); editEvent(key,idx);};
-      cell.appendChild(e);
-    });
-    cell.onclick=()=>{
-      const name=prompt("Nazwa treningu:");
-      if(!name)return;
-      calendarData[key].push({name,plan:JSON.parse(JSON.stringify(plan))});
-      saveCalendar();
-      renderCalendar();
-    };
-    calendarDiv.appendChild(cell);
-  }
-}
-
-function editEvent(key,idx){
-  const action=prompt("Edytuj: wpisz nową nazwę lub wpisz DELETE aby usunąć");
-  if(action===null)return;
-  if(action.toUpperCase()==="DELETE"){
-    calendarData[key].splice(idx,1);
-  }else{
-    calendarData[key][idx].name=action;
-  }
-  saveCalendar();
-  renderCalendar();
-}
-
-function prevMonth(){currentDate.setMonth(currentDate.getMonth()-1); renderCalendar();}
-function nextMonth(){currentDate.setMonth(currentDate.getMonth()+1); renderCalendar();}
 
 /***********************
  * INITIAL RENDER

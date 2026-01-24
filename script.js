@@ -32,6 +32,152 @@ const templateName = document.getElementById("templateName");
 
 let currentDate = new Date();
 
+/* =========================
+   TIMER – LOGIKA ETAPOWA
+========================= */
+
+let timeline = [];
+let currentStageIndex = 0;
+let timeLeft = 0;
+let timerInterval = null;
+let isPaused = false;
+
+const timeEl = document.getElementById("time");
+const labelEl = document.getElementById("timerLabel");
+const beep = document.getElementById("beep");
+
+/* =========================
+   BUDOWANIE TIMELINE
+========================= */
+/*
+  plan = [
+    {
+      name: "Przysiady",
+      sets: 3,
+      time: 1,      // minuty
+      rest: 0.5     // minuty
+    }
+  ]
+*/
+
+function buildTimeline(plan) {
+  timeline = [];
+
+  plan.forEach(ex => {
+    for (let s = 1; s <= ex.sets; s++) {
+      timeline.push({
+        type: "work",
+        duration: ex.time * 60,
+        label: `${ex.name} – seria ${s}`
+      });
+
+      timeline.push({
+        type: "rest",
+        duration: ex.rest * 60,
+        label: `Odpoczynek po ${ex.name}`
+      });
+    }
+  });
+}
+
+/* =========================
+   START TRENINGU
+========================= */
+
+function startTraining() {
+  if (!plan || plan.length === 0) {
+    alert("Brak ćwiczeń w planie");
+    return;
+  }
+
+  clearInterval(timerInterval);
+  buildTimeline(plan);
+
+  currentStageIndex = 0;
+  startStage();
+}
+
+/* =========================
+   START ETAPU
+========================= */
+
+function startStage() {
+  if (currentStageIndex >= timeline.length) {
+    labelEl.innerText = "Trening zakończony 💪";
+    timeEl.innerText = "00:00.0";
+    return;
+  }
+
+  const stage = timeline[currentStageIndex];
+  timeLeft = stage.duration;
+  labelEl.innerText = stage.label;
+
+  tick();
+}
+
+/* =========================
+   TICK (0.1s)
+========================= */
+
+function tick() {
+  clearInterval(timerInterval);
+
+  timerInterval = setInterval(() => {
+    if (isPaused) return;
+
+    timeLeft -= 0.1;
+
+    if (timeLeft <= 0) {
+      beep.play();
+      clearInterval(timerInterval);
+      currentStageIndex++;
+      startStage();
+      return;
+    }
+
+    renderTime(timeLeft);
+  }, 100);
+}
+
+/* =========================
+   FORMAT CZASU
+========================= */
+
+function renderTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  const d = Math.floor((seconds % 1) * 10);
+
+  timeEl.innerText =
+    `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}.${d}`;
+}
+
+/* =========================
+   KONTROLA
+========================= */
+
+function pauseTimer() {
+  isPaused = !isPaused;
+}
+
+function skipStage() {
+  clearInterval(timerInterval);
+  beep.play();
+  currentStageIndex++;
+  startStage();
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timeline = [];
+  currentStageIndex = 0;
+  timeLeft = 0;
+  isPaused = false;
+
+  labelEl.innerText = "Timer";
+  timeEl.innerText = "00:00.0";
+}
+
 /***********************
  * INIT DEFAULT EXERCISES
  ***********************/

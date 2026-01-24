@@ -43,11 +43,16 @@
 
     <div class="timer-panel">
       <h3>Timer: <span id="time">00:00</span></h3>
-      <button onclick="startTimer()">Start</button>
-      <button onclick="pauseTimer()">Pauza</button>
-      <button onclick="skipTimer()">Pomiń</button>
-      <button onclick="resetTimer()">Reset</button>
-      <audio id="beep" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+      <div id="time"></div>
+<div id="timerLabel"></div>
+
+<button onclick="startTraining()">Start</button>
+<button onclick="pauseTimer()">Pauza</button>
+<button onclick="skipStage()">Pomiń</button>
+<button onclick="resetTimer()">Reset</button>
+
+<audio id="beep" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+
     </div>
   </main>
 

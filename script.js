@@ -213,6 +213,21 @@ if(exercises.length===0){
   ];
   localStorage.setItem(LS.EXERCISES, JSON.stringify(exercises));
 }
+function renderCalendar() {
+  // tymczasowo pusto
+}
+function addToPlan(exercise) {
+  plan.push({
+    name: exercise.name,
+    sets: 1,
+    time: 0.5,
+    rest: 0.5,
+    reps: 0,
+    yt: exercise.yt || ""
+  });
+
+  renderPlan();
+}
 
 /***********************
  * SAVE FUNCTIONS

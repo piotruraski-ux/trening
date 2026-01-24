@@ -80,6 +80,8 @@ function buildTimeline(plan) {
 ========================= */
 
 function startTraining() {
+  console.log(plan);
+
   if (!plan || plan.length === 0) {
     alert("Brak ćwiczeń w planie");
     return;

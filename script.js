@@ -424,6 +424,27 @@ function deleteExercise(index){
   saveExercises();
   renderExercises();
 }
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+
+function prevMonth() {
+  currentMonth--;
+  if (currentMonth < 0) {
+    currentMonth = 11;
+    currentYear--;
+  }
+  renderCalendar();
+}
+
+function nextMonth() {
+  currentMonth++;
+  if (currentMonth > 11) {
+    currentMonth = 0;
+    currentYear++;
+  }
+  renderCalendar();
+}
+
 /***********************
  * INITIAL RENDER
  ***********************/

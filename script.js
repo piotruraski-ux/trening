@@ -64,13 +64,14 @@ function buildTimeline(plan) {
     for (let s = 1; s <= ex.sets; s++) {
       timeline.push({
         type: "work",
-        duration: ex.time * 60,
+        duration: Number(ex.time) * 60,
+
         label: `${ex.name} – seria ${s}`
       });
 
       timeline.push({
         type: "rest",
-        duration: ex.rest * 60,
+        duration: Number(ex.rest) * 60,
         label: `Odpoczynek po ${ex.name}`
       });
     }
@@ -99,6 +100,12 @@ function startTraining() {
 ========================= */
 
 function startStage() {
+  if (!timeline[currentStageIndex] || timeline[currentStageIndex].duration <= 0) {
+  currentStageIndex++;
+  startStage();
+  return;
+}
+
   if (currentStageIndex >= timeline.length) {
     labelEl.innerText = "Trening zakończony 💪";
     timeEl.innerText = "00:00.0";

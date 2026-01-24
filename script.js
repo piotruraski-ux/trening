@@ -283,10 +283,10 @@ function renderPlan() {
       ${thumb}
       <b>${p.name}</b>
 
-      <div class="plan-inputs">
+      <div>
         Serie
         <input type="number" min="1"
-          value="${p.sets ?? p.series ?? 1}"
+          value="${p.sets ?? 1}"
           onchange="plan[${i}].sets = Number(this.value)">
 
         Powt
@@ -301,7 +301,7 @@ function renderPlan() {
 
         Odp (sek)
         <input type="number" min="0"
-          value="${p.rest ?? 0}"
+          value="${(p.rest ?? 0) * 60}"
           onchange="plan[${i}].rest = Number(this.value) / 60">
 
         <button onclick="plan.splice(${i},1);renderPlan()">❌</button>
@@ -311,6 +311,7 @@ function renderPlan() {
     planDiv.appendChild(d);
   });
 }
+
 
 
 function extractYTId(url){

@@ -384,7 +384,7 @@ function renderCalendar() {
     cell.className = "calendar-day";
     cell.innerHTML = `<b>${day}</b>`;
 
-    if (calendarData[dateStr]) {
+
       if (calendarData[dateStr]) {
   const entry = calendarData[dateStr];
 

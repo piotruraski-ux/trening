@@ -414,8 +414,6 @@ function renderCalendar() {
     grid.appendChild(cell);
   }
 
-  cal.appendChild(grid);
-
 
 
 

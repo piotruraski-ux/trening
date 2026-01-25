@@ -415,7 +415,7 @@ function renderCalendar() {
   }
 
   cal.appendChild(grid);
-}
+
 
 
 
